@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,32 @@
 # limitations under the License.
 #
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+# call the proprietary setup
+$(call inherit-product, vendor/motorola/falcon/falcon-vendor.mk)
 
-# Get non-open-source specific aspects
-$(call inherit-product-if-exists, vendor/samsung/ms013g/ms013g-vendor.mk)
-
-# Overlays
+# Overlay
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
-# common klte
-$(call inherit-product, device/samsung/ms01-common/ms01.mk)
+# Audio
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/audio_platform_info.xml:system/etc/audio_platform_info.xml \
+    $(LOCAL_PATH)/configs/mixer_paths.xml:system/etc/mixer_paths.xml
+
+# CMActions
+PRODUCT_PACKAGES += \
+    CMActions
+
+# Ramdisk
+PRODUCT_PACKAGES += \
+    init.target.rc
+
+# Wifi
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wifi/WCNSS_qcom_wlan_nv.bin:system/etc/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin
+
+# CDMA APN list
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/apns-conf-cdma.xml:system/etc/apns-conf-cdma.xml
+
+# Inherit from msm8226-common
+$(call inherit-product, device/motorola/msm8226-common/msm8226.mk)
